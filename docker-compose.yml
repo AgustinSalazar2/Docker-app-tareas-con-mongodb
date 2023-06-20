@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: mongo5
+    ports:
+      - 27017:27017
+    volumes:
+      - ./datadb:/data/db
+  app-server:
+    container_name: servidor5
+    build:
+      context: ./app-server
+      dockerfile: Dockerfile
+    environment:
+      PORT: 3000
+      MONGO_DB_URI: mongodb://mongo:27017/tarea
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - 4000:3000
+  fron-end-react:
+    container_name: front-end-React
+    build:
+      context: ./fron-end-react
+      dockerfile: Dockerfile
+    depends_on:
+      - app-server
+    ports:
+      - 3005:3005
